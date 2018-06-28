@@ -1,13 +1,13 @@
 import { handleActions } from 'redux-actions';
 import Immutable from 'immutable'
 import _ from 'lodash';
-import Todo, { DONE } from '../../models/todo';
+import Task, { DONE } from '../../models/task';
 
 function merge(state, action) {
   const payload = action.payload;
-  return _.reduce(_.mapValues(payload.entities.todos), (res, value) => {
-    const entityId = (new Todo(value)).entityId;
-    return res.update(entityId, new Todo(), (current) => {
+  return _.reduce(_.mapValues(payload.entities.tasks), (res, value) => {
+    const entityId = (new Task(value)).entityId;
+    return res.update(entityId, new Task(), (current) => {
       return current.merge(value);
     });
   }, state);
@@ -15,15 +15,15 @@ function merge(state, action) {
 
 function finish(state, action) {
   const entityId = action.payload.entityId;
-  return state.update(entityId, (todo) => {
-    return todo.set('status', DONE);
+  return state.update(entityId, (task) => {
+    return task.set('status', DONE);
   });
 }
 
 const handlers = {
-  FETCH_TODOS: merge,
-  CREATE_TODO: merge,
-  FINISH_TODO: finish,
+  FETCH_TASKS: merge,
+  CREATE_TASK: merge,
+  FINISH_TASK: finish,
 };
 
 const initialState = Immutable.Map();

@@ -5,34 +5,34 @@ var bodyParser = require('body-parser');
 var app = express();
 app.use(bodyParser.json());
 
-var todos = Immutable.List();
-var users = Immutable.List();
+var tasks = Immutable.List();
+var projects = Immutable.List();
 
-users = users.push(
+projects = projects.push(
   Immutable.fromJS({
     id: 1,
-    name: 'john',
+    name: 'Art',
     status: 1
   }),
   Immutable.fromJS({
     id: 2,
-    name: 'abbie',
+    name: 'Music',
     status: 0
   })
 );
 
-todos = todos.push(
+tasks = tasks.push(
   Immutable.fromJS({
     id: 1,
-    body: 'ticket #1',
+    body: 'This is an art todo',
     status: 1,
-    userId: 1
+    projectId: 1
   }),
   Immutable.fromJS({
     id: 2,
-    body: 'ticket #2',
+    body: 'This is a music todo',
     status: 1,
-    userId: 2
+    projectId: 2
   })
 );
 
@@ -46,37 +46,37 @@ app.listen(3000, function(error) {
   }
 });
 
-app.get('/users.json', function(req, res) {
-  res.json({users: users.map((user) => { return { user: user.toJS() }; })})
+app.get('/projects.json', function(req, res) {
+  res.json({projects: projects.map((project) => { return { project: project.toJS() }; })})
 });
 
-app.get('/todos.json', function(req, res) {
+app.get('/tasks.json', function(req, res) {
   res.json({
-    todos: todos.map((todo) => {
-      var user = users.find((user) => { return todo.get('userId') === user.get('id'); });
-      return { todo: todo.merge({user}).toJS() };
+    tasks: tasks.map((task) => {
+      var project = projects.find((project) => { return task.get('projectId') === project.get('id'); });
+      return { task: task.merge({project}).toJS() };
     })
   });
 });
 
-app.post('/todos.json', function(req, res) {
-  var lastElem = todos.get(-1);
+app.post('/tasks.json', function(req, res) {
+  var lastElem = tasks.get(-1);
   var nextId = lastElem.get('id') + 1;
-  var newTodo = Immutable.fromJS({
+  var newTask = Immutable.fromJS({
     id: nextId,
     body: req.body.body,
     status: 1,
-    userId: req.body.userId
+    projectId: req.body.projectId
   });
-  todos = todos.push(newTodo);
-  var user = users.find((user) => { return newTodo.get('userId') === user.get('id'); });
-  res.json({todo: newTodo.merge({user}).toJS()});
+  tasks = tasks.push(newTask);
+  var project = projects.find((project) => { return newTask.get('projectId') === project.get('id'); });
+  res.json({task: newTask.merge({project}).toJS()});
 });
 
-app.put('/todos/:id.json', function(req, res) {
-  var todoId = parseInt(req.params.id, 10);
-  var todo = todos.find((todo) => { return todo.get('id') === todoId; });
-  todo = todo.set('status', req.body.status);
-  todos = todos.set(todoId - 1, todo);
+app.put('/tasks/:id.json', function(req, res) {
+  var taskId = parseInt(req.params.id, 10);
+  var task = tasks.find((task) => { return task.get('id') === taskId; });
+  task = task.set('status', req.body.status);
+  tasks = tasks.set(taskId - 1, task);
   res.sendStatus(200);
 });

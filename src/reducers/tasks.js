@@ -3,24 +3,24 @@ import Immutable from 'immutable'
 
 function merge(state, action) {
   const payload = action.payload;
-  return state.update('todos', (current) => {
-    if(payload.result.todos) {
-      const entityIds = payload.result.todos.map((value) => { return value.todo; })
+  return state.update('tasks', (current) => {
+    if(payload.result.tasks) {
+      const entityIds = payload.result.tasks.map((value) => { return value.task; })
       return current.union(entityIds);
-    } else if(payload.result.todo) {
-      const entityId = payload.result.todo;
+    } else if(payload.result.task) {
+      const entityId = payload.result.task;
       return current.union([entityId]);
     }
   });
 }
 
 const handlers = {
-  FETCH_TODOS: merge,
-  CREATE_TODO: merge,
+  FETCH_TASKS: merge,
+  CREATE_TASK: merge,
 };
 
 const initialState = Immutable.Map({
-  todos: Immutable.OrderedSet(),
+  tasks: Immutable.OrderedSet(),
 });
 
 export default handleActions(handlers, initialState);

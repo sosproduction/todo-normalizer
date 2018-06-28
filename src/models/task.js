@@ -6,25 +6,25 @@ export const DONE  = 2;
 
 const defaultValues = {
   id: undefined,
-  user: undefined,
-  userId: undefined,
+  project: undefined,
+  projectId: undefined,
   body: '',
   status: INIT,
 };
 
-export const TodoType = PropTypes.shape({
+export const TaskType = PropTypes.shape({
   id: PropTypes.number.isRequired,
   body: PropTypes.string.isRequired,
   isDone: PropTypes.bool.isRequired,
   entityId: PropTypes.string.isRequired,
 })
 
-export default class Todo extends Record(defaultValues) {
+export default class Task extends Record(defaultValues) {
   get isDone() {
     return this.status === DONE;
   }
 
   get entityId() {
-    return `todo:${this.id}`;
+    return `task:${this.id}`;
   }
 }
